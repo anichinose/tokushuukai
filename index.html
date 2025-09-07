@@ -6,6 +6,12 @@
   <title>徳洲会体操クラブ　英単語（Week 10）クイズ</title>
   <style>
     :root{
+      --purple-dark1:#2d1b3d;
+      --purple-mid:#5a4b6b;
+      --purple-light:#8b7aa0;
+      --silver-dark:#a8a8b3;
+      --silver-light:#d4d4dc;
+      --silver-bright:#f0f0f5;
       --card:#ffffff;
       --text:#1a1333;
       --correct:#18a558;
@@ -13,7 +19,7 @@
     }
 
     html,body{
-      height:100svh; margin:0; overflow:hidden;
+      height:100vh; margin:0; overflow:hidden;
       background: linear-gradient(135deg, 
         #f0f0f5 0%, 
         #d4d4dc 15%, 
@@ -41,7 +47,14 @@
 
     .status{ 
       display:flex; justify-content:space-between; align-items:center; 
-      font-size:clamp(12px,2.5vw,14px); color:#f5f5f8; 
+      font-size:clamp(16px,4vw,24px); color:#fff; font-weight:800;
+    }
+    
+    .status #progress{
+      font-size:clamp(20px,5vw,32px); 
+      color:#000000; 
+      text-shadow:0 2px 8px rgba(255,255,255,.8);
+      font-weight:900;
     }
 
     .word{
@@ -129,7 +142,7 @@
       { w: "specific",   a: ["具体的な","一般的な","同じ","古い"], c: 0 },
       { w: "worried",    a: ["心配している","喜んでいる","怒っている","退屈している"], c: 0 },
       { w: "strict",     a: ["厳しい","優しい","弱い","広い"], c: 0 },
-      { w: "exhausted",  a: ["へとへとの","眠い","空腹の","退屈な"], c: 0 },
+      { w: "exhausted",  a: ["へとへとの","眠い","空腹な","退屈な"], c: 0 },
       { w: "exactly",    a: ["正確に","たぶん","だいたい","少し"], c: 0 },
       { w: "fluently",   a: ["流ちょうに","ゆっくりと","静かに","きれいに"], c: 0 },
     ];
@@ -143,14 +156,11 @@
       return a;
     }
 
-    // ====== High-quality English voice selection ======
+    // High-quality English voice selection
     let EN_VOICE = null;
     const EN_PRIORITY_NAMES = [
-      // iOS/macOS quality voices
       "Samantha","Alex","Daniel","Karen","Moira","Tessa","Serena",
-      // Google voices (Android/Chrome)
       "Google US English","Google UK English Female","Google UK English Male",
-      // Windows
       "Microsoft Zira","Microsoft Guy","Microsoft Aria","Microsoft James"
     ];
     const isEnglish = v => v && /^en(-|_|$)/i.test(v.lang || "");
@@ -158,33 +168,20 @@
     function pickEnglishVoice(){
       const voices = speechSynthesis.getVoices();
       if(!voices || !voices.length) return null;
-
-      // 1) Exact priority names first
       for(const name of EN_PRIORITY_NAMES){
         const m = voices.find(v => v.name === name && isEnglish(v));
         if(m) return m;
       }
-      // 2) Any English voice (prefer US/GB)
       const prefer = voices.find(v => isEnglish(v) && /(US|GB|GBR|UK)/i.test(v.lang));
       if(prefer) return prefer;
-
-      // 3) Fallback: first English voice
       const any = voices.find(isEnglish);
       return any || null;
     }
 
     function ensureEnglishVoice(cb){
-      // some browsers load voices async
       const tryPick = () => {
-        if(!EN_VOICE){
-          EN_VOICE = pickEnglishVoice();
-        }
-        if(EN_VOICE){
-          cb && cb();
-        }else{
-          // wait a bit more
-          setTimeout(tryPick, 150);
-        }
+        if(!EN_VOICE) EN_VOICE = pickEnglishVoice();
+        if(EN_VOICE){ cb && cb(); } else { setTimeout(tryPick, 150); }
       };
       if (speechSynthesis.getVoices().length) {
         EN_VOICE = pickEnglishVoice();
@@ -197,7 +194,6 @@
         tryPick();
       }
     }
-    // ================================================
 
     // Simple sound effects
     let audioCtx = null;
@@ -242,8 +238,8 @@
         choicesEl.innerHTML = '';
         resultEl.textContent = `結果：${score} / ${QUESTIONS.length}`;
         nextBtn.classList.add('hidden');
-        restartBtn.classList.remove('hidden');   // Play Again
-        speakBtn.classList.add('hidden');        // Hide megaphone on final page
+        restartBtn.classList.remove('hidden');
+        speakBtn.classList.add('hidden');
         progressEl.textContent = `${QUESTIONS.length} / ${QUESTIONS.length}`;
         document.body.classList.add('final');
         try{ restartBtn.focus(); }catch(e){}
@@ -290,7 +286,6 @@
     function speak(text){
       try{
         const u = new SpeechSynthesisUtterance(text);
-        // Ensure English voice
         u.voice = EN_VOICE || null;
         u.lang  = (EN_VOICE && EN_VOICE.lang) ? EN_VOICE.lang : 'en-US';
         u.rate  = 0.95;
@@ -307,9 +302,7 @@
       }
     });
 
-    // Preload English voice asap
     ensureEnglishVoice();
-
     render();
   </script>
 </body>
