@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>徳洲会体操クラブ　英単語クイズ</title>
+  <title>徳洲会体操クラブ　英単語（Week 10）クイズ</title>
   <style>
     :root{
       --purple-dark1:#05020a;   /* almost black purple */
@@ -14,70 +14,121 @@
       --correct:#18a558;
       --wrong:#ff4d6d;
     }
+
     html,body{
-      height:100vh;margin:0;overflow:hidden;
+      height:100svh; margin:0; overflow:hidden;
       background:
         radial-gradient(900px 600px at 25% 20%, rgba(255,255,255,.04), transparent 70%),
         radial-gradient(700px 500px at 70% 30%, rgba(255,255,255,.03), transparent 65%),
         linear-gradient(165deg, var(--purple-dark1), var(--purple-dark2) 55%, var(--purple-dark3));
       background-size: 200% 200%;
       animation: sheen 24s ease-in-out infinite;
-      display:flex;align-items:center;justify-content:center;padding:24px;
+      display:flex; align-items:center; justify-content:center; padding:16px;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
       color:#fff;
     }
     @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-    .app{width:min(760px,100%); max-height: 90vh; display:flex; flex-direction:column; justify-content:center;}
+    .app{width:min(680px,100%); height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px;}
 
-    .title{ text-align:center;font-weight:800;letter-spacing:.04em;line-height:1.2;margin-bottom:14px;font-size:clamp(20px,4vw,32px);color:#fff4b0;text-shadow:0 2px 14px rgba(0,0,0,.55), 0 0 20px rgba(255,244,176,.35); }
+    .title{
+      text-align:center; font-weight:800; letter-spacing:.04em; line-height:1.2;
+      margin:0; font-size:clamp(18px,3.5vw,26px); color:#fff4b0;
+      text-shadow:0 2px 12px rgba(0,0,0,.55), 0 0 20px rgba(255,244,176,.35);
+    }
+    .title .date{ font-size:.75em; font-weight:700; color:#ffeeb5; margin-left:.5em; opacity:.95 }
 
-    .card{background:var(--card);color:var(--text);border-radius:22px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:16px;flex:1;display:flex;flex-direction:column;justify-content:space-between;}
+    .status{
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:clamp(12px,2.5vw,14px); opacity:.9; color:#efeefe
+    }
 
-    .status{display:flex;justify-content:space-between;align-items:center;font-size:clamp(12px,2.5vw,14px);opacity:.9;margin-bottom:10px;color:#efeefe}
+    .card{
+      background:var(--card); color:var(--text); border-radius:18px;
+      box-shadow:0 12px 32px rgba(0,0,0,.35);
+      padding:14px;
+      display:flex; flex-direction:column;
+      /* No min-heights -> keeps layout tight so buttons sit right under choices */
+      height:calc(100% - 70px);  /* fit within viewport with title/status */
+    }
 
-    .word{background:#f8f7fc;border-radius:16px;padding:8px 12px;display:flex;justify-content:center;align-items:center;gap:10px;box-shadow:inset 0 0 0 2px #eee;margin-bottom:8px;min-height:80px}
-    .word .text{font-size:clamp(24px,6vw,42px);font-weight:800;letter-spacing:.02em}
-    .speak{border:none;background:#fff;border:2px solid #e8e3ff;border-radius:12px;padding:8px 10px;cursor:pointer;font-size:22px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .05s ease, border-color .2s, background .2s}
+    .word{
+      background:#f8f7fc; border-radius:14px; padding:12px;
+      display:flex; justify-content:center; align-items:center; gap:8px;
+      box-shadow:inset 0 0 0 2px #eee; margin-bottom:10px; min-height:80px;
+    }
+    .word .text{font-size:clamp(24px,6vw,42px); font-weight:800; letter-spacing:.02em}
+    .speak{
+      border:none; background:#fff; border:2px solid #e8e3ff; border-radius:12px;
+      padding:8px 10px; cursor:pointer; font-size:22px; line-height:1;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      transition:transform .05s ease, border-color .2s, background .2s
+    }
     .speak:active{transform:scale(.95)}
 
-    .choices{display:grid;grid-template-columns:1fr;gap:6px;flex:1;align-content:start}
-    @media (min-width:520px){.choices{grid-template-columns:1fr 1fr;}}
-    @media (min-width:520px){.choices{grid-template-columns:1fr 1fr;min-height:220px}}
-    @media (min-width:520px){.choices{grid-template-columns:1fr 1fr}}
-
-    .choice{background:#ffffff;border:2px solid #eceaff;border-radius:10px;padding:8px;font-size:clamp(14px,3.5vw,18px);font-weight:600;text-align:left;cursor:pointer;transition:transform .05s ease, box-shadow .2s, border-color .2s, background .2s;box-shadow:0 2px 6px rgba(0,0,0,.06);color:#2b1d55}
+    .choices{
+      display:grid; grid-template-columns:1fr 1fr; gap:8px;
+      align-content:start;
+    }
+    .choice{
+      background:#ffffff; border:2px solid #eceaff; border-radius:10px;
+      padding:10px 12px; font-size:clamp(14px,3.5vw,18px); font-weight:700; text-align:left;
+      cursor:pointer; transition:transform .05s ease, box-shadow .2s, border-color .2s, background .2s;
+      box-shadow:0 2px 6px rgba(0,0,0,.06); color:#2b1d55
+    }
     .choice:active{transform:scale(.99)}
-    .choice.correct{border-color:var(--correct);background:#e8fff3;color:#0b6a3f}
-    .choice.incorrect{border-color:var(--wrong);background:#fff0f3;color:#8b1230}
-    .choice[disabled]{opacity:.9;cursor:not-allowed}
+    .choice.correct{border-color:var(--correct); background:#e8fff3; color:#0b6a3f}
+    .choice.incorrect{border-color:var(--wrong); background:#fff0f3; color:#8b1230}
+    .choice[disabled]{opacity:.9; cursor:not-allowed}
 
-    .controls{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:6px;}
-    .btn{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.45);border-radius:10px;padding:6px 10px;font-weight:700;letter-spacing:.02em;cursor:pointer;backdrop-filter:blur(4px);transition:transform .05s ease, background .2s, border-color .2s;font-size:14px;}
+    /* Controls live RIGHT UNDER the choices */
+    .controls{
+      display:flex; gap:10px; justify-content:flex-start; align-items:center;
+      margin-top:8px;
+    }
+    .btn{
+      background:#f3f1ff; color:#2b1d55; border:2px solid #dcd6ff; border-radius:12px;
+      padding:10px 14px; font-weight:800; letter-spacing:.02em; cursor:pointer;
+      backdrop-filter:blur(4px); transition:transform .05s ease, background .2s, border-color .2s
+    }
     .btn:active{transform:scale(.98)}
-    .btn.primary{background:#3b2bbf;border-color:#b9b2ff}
+    .btn.primary{background:#3b2bbf; border-color:#b9b2ff; color:#fff}
     .btn.hidden{display:none}
     .hidden{display:none !important}
-    .result{text-align:center;color:#fff;margin-top:14px;font-weight:700}
-  .title .date{ font-size:.7em; font-weight:700; color:#ffeeb5; margin-left:.5em; opacity:.95 }
+
+    .result{text-align:center; color:#fff; margin-top:8px; font-weight:800}
+    .final #result{ font-size:clamp(22px,5.5vw,34px); color:#ffef9c; text-shadow:0 1px 10px rgba(0,0,0,.35) }
+
+    /* Final screen layout */
+    .final .controls{ justify-content:center }
+    .final .word{ min-height:40px }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="title">徳洲会体操クラブ　英単語クイズ <span class="date">2025/9/10</span></div>
-    <div class="status"><span id="progress">1 / 15</span><span id="score">スコア：0</span></div>
+    <h1 class="title">徳洲会体操クラブ　英単語（Week 10）クイズ <span class="date">2025/9/10</span></h1>
+
+    <div class="status">
+      <span id="progress">1 / 15</span>
+      <span id="score">スコア：0</span>
+    </div>
+
     <div class="card">
       <div class="word">
         <div id="word" class="text">Loading...</div>
         <button id="speakBtn" class="speak" title="発音を聴く" aria-label="発音を聴く">📢</button>
       </div>
+
       <div id="choices" class="choices"></div>
+
+      <!-- Buttons are RIGHT UNDER the choices -->
       <div class="controls">
         <button id="nextBtn" class="btn primary hidden">次へ ▶</button>
         <button id="restartBtn" class="btn hidden">もう一度やる</button>
       </div>
     </div>
-    <div id="result" class="result"></div>
+
+    <div id="result" class="result" aria-live="polite"></div>
   </div>
 
   <script>
@@ -108,6 +159,7 @@
       return a;
     }
 
+    // Simple sound effects
     let audioCtx = null;
     function tone(freq=440, dur=0.18, type='sine', vol=0.15){
       try{
@@ -143,15 +195,18 @@
       resultEl.textContent = '';
       nextBtn.classList.add('hidden');
       restartBtn.classList.add('hidden');
+      document.body.classList.remove('final');
 
       if(idx >= order.length){
         wordEl.textContent = 'おつかれさま！';
         choicesEl.innerHTML = '';
         resultEl.textContent = `結果：${score} / ${QUESTIONS.length}`;
         nextBtn.classList.add('hidden');
-        restartBtn.classList.remove('hidden');
-        speakBtn.classList.add('hidden');
+        restartBtn.classList.remove('hidden');   // show Play Again
+        speakBtn.classList.add('hidden');        // hide megaphone on final page
         progressEl.textContent = `${QUESTIONS.length} / ${QUESTIONS.length}`;
+        document.body.classList.add('final');
+        try{ restartBtn.focus(); }catch(e){}
         return;
       }
 
@@ -161,9 +216,9 @@
       progressEl.textContent = `${idx+1} / ${QUESTIONS.length}`;
       scoreEl.textContent = `スコア：${score}`;
 
+      // Fresh shuffle of answer choices each time
       const optionIdxs = shuffle([0,1,2,3]);
       choicesEl.innerHTML = '';
-
       optionIdxs.forEach(i=>{
         const btn = document.createElement('button');
         btn.className = 'choice';
@@ -183,13 +238,14 @@
 
       if(isCorrect){ score++; sfxCorrect(); } else { sfxWrong(); }
       scoreEl.textContent = `スコア：${score}`;
-      nextBtn.classList.remove('hidden');
+      nextBtn.classList.remove('hidden'); // appears right under choices
     }
 
     nextBtn.addEventListener('click', ()=>{ idx++; render(); });
 
     restartBtn.addEventListener('click', ()=>{
-      score = 0; idx = 0; order = shuffle([...Array(QUESTIONS.length).keys()]); render();
+      score = 0; idx = 0; order = shuffle([...Array(QUESTIONS.length).keys()]);
+      render();
     });
 
     function speak(text){
@@ -204,7 +260,7 @@
     }
     speakBtn.addEventListener('click', ()=>{
       const showing = wordEl.textContent.trim();
-      if(showing && showing !== 'おつかれさま！') speak(showing);
+      if(showing && showing !== 'おつかれさま!') speak(showing);
     });
 
     render();
