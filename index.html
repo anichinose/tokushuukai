@@ -65,7 +65,6 @@
     .choices{
       display:grid; grid-template-columns:1fr 1fr; gap:10px; align-content:start;
     }
-    /* BIGGER choice boxes */
     .choice{
       background:#ffffff; border:2px solid #eceaff; border-radius:12px;
       padding:14px 14px; font-size:clamp(16px,3.8vw,20px); font-weight:800; text-align:center;
@@ -77,7 +76,6 @@
     .choice.incorrect{border-color:var(--wrong); background:#fff0f3; color:#8b1230}
     .choice[disabled]{opacity:.95; cursor:not-allowed}
 
-    /* Controls RIGHT UNDER the choices, centered */
     .controls{
       display:flex; gap:10px; justify-content:center; align-items:center;
       margin-top:10px;
@@ -93,10 +91,8 @@
     .hidden{display:none !important}
 
     .result{ text-align:center; color:#2b1d55; margin-top:8px; font-weight:900 }
-    /* Final screen: center content and make result big, near middle */
     .final .card{ justify-content:center; }
     .final .result{ font-size:clamp(26px,6vw,40px); color:#3b2bbf; }
-
   </style>
 </head>
 <body>
@@ -116,13 +112,11 @@
 
       <div id="choices" class="choices"></div>
 
-      <!-- Buttons RIGHT UNDER choices, centered -->
       <div class="controls">
         <button id="nextBtn" class="btn primary hidden">次へ ▶</button>
         <button id="restartBtn" class="btn hidden">もう一度やる</button>
       </div>
 
-      <!-- Result INSIDE the card so it can sit near the middle on final page -->
       <div id="result" class="result" aria-live="polite"></div>
     </div>
   </div>
@@ -154,6 +148,62 @@
       }
       return a;
     }
+
+    // ====== High-quality English voice selection ======
+    let EN_VOICE = null;
+    const EN_PRIORITY_NAMES = [
+      // iOS/macOS quality voices
+      "Samantha","Alex","Daniel","Karen","Moira","Tessa","Serena",
+      // Google voices (Android/Chrome)
+      "Google US English","Google UK English Female","Google UK English Male",
+      // Windows
+      "Microsoft Zira","Microsoft Guy","Microsoft Aria","Microsoft James"
+    ];
+    const isEnglish = v => v && /^en(-|_|$)/i.test(v.lang || "");
+
+    function pickEnglishVoice(){
+      const voices = speechSynthesis.getVoices();
+      if(!voices || !voices.length) return null;
+
+      // 1) Exact priority names first
+      for(const name of EN_PRIORITY_NAMES){
+        const m = voices.find(v => v.name === name && isEnglish(v));
+        if(m) return m;
+      }
+      // 2) Any English voice (prefer US/GB)
+      const prefer = voices.find(v => isEnglish(v) && /(US|GB|GBR|UK)/i.test(v.lang));
+      if(prefer) return prefer;
+
+      // 3) Fallback: first English voice
+      const any = voices.find(isEnglish);
+      return any || null;
+    }
+
+    function ensureEnglishVoice(cb){
+      // some browsers load voices async
+      const tryPick = () => {
+        if(!EN_VOICE){
+          EN_VOICE = pickEnglishVoice();
+        }
+        if(EN_VOICE){
+          cb && cb();
+        }else{
+          // wait a bit more
+          setTimeout(tryPick, 150);
+        }
+      };
+      if (speechSynthesis.getVoices().length) {
+        EN_VOICE = pickEnglishVoice();
+        cb && cb();
+      } else {
+        speechSynthesis.onvoiceschanged = () => {
+          EN_VOICE = pickEnglishVoice();
+          cb && cb();
+        };
+        tryPick();
+      }
+    }
+    // ================================================
 
     // Simple sound effects
     let audioCtx = null;
@@ -198,8 +248,8 @@
         choicesEl.innerHTML = '';
         resultEl.textContent = `結果：${score} / ${QUESTIONS.length}`;
         nextBtn.classList.add('hidden');
-        restartBtn.classList.remove('hidden');   // show Play Again
-        speakBtn.classList.add('hidden');        // hide megaphone on final page
+        restartBtn.classList.remove('hidden');   // Play Again
+        speakBtn.classList.add('hidden');        // Hide megaphone on final page
         progressEl.textContent = `${QUESTIONS.length} / ${QUESTIONS.length}`;
         document.body.classList.add('final');
         try{ restartBtn.focus(); }catch(e){}
@@ -233,7 +283,7 @@
 
       if(isCorrect){ score++; sfxCorrect(); } else { sfxWrong(); }
       scoreEl.textContent = `スコア：${score}`;
-      nextBtn.classList.remove('hidden'); // appears right under choices (centered)
+      nextBtn.classList.remove('hidden');
     }
 
     nextBtn.addEventListener('click', ()=>{ idx++; render(); });
@@ -246,17 +296,25 @@
     function speak(text){
       try{
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        u.rate = 0.95;
+        // Ensure English voice
+        u.voice = EN_VOICE || null;
+        u.lang  = (EN_VOICE && EN_VOICE.lang) ? EN_VOICE.lang : 'en-US';
+        u.rate  = 0.95;
         u.pitch = 1.0;
         speechSynthesis.cancel();
         speechSynthesis.speak(u);
       }catch(e){}
     }
+
     speakBtn.addEventListener('click', ()=>{
       const showing = wordEl.textContent.trim();
-      if(showing && showing !== 'おつかれさま！') speak(showing);
+      if(showing && showing !== 'おつかれさま！'){
+        ensureEnglishVoice(() => speak(showing));
+      }
     });
+
+    // Preload English voice asap
+    ensureEnglishVoice();
 
     render();
   </script>
