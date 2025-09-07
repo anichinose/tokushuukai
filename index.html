@@ -6,9 +6,6 @@
   <title>徳洲会体操クラブ　英単語（Week 10）クイズ</title>
   <style>
     :root{
-      --purple-dark1:#05020a;
-      --purple-dark2:#12041f;
-      --purple-dark3:#240838;
       --card:#ffffff;
       --text:#1a1333;
       --correct:#18a558;
@@ -17,81 +14,80 @@
 
     html,body{
       height:100svh; margin:0; overflow:hidden;
-      background:
-        radial-gradient(900px 600px at 25% 20%, rgba(255,255,255,.04), transparent 70%),
-        radial-gradient(700px 500px at 70% 30%, rgba(255,255,255,.03), transparent 65%),
-        linear-gradient(165deg, var(--purple-dark1), var(--purple-dark2) 55%, var(--purple-dark3));
-      background-size:200% 200%;
-      animation: sheen 24s ease-in-out infinite;
-      display:flex; align-items:center; justify-content:center; padding:16px;
+      background: linear-gradient(135deg, 
+        #f0f0f5 0%, 
+        #d4d4dc 15%, 
+        #a8a8b3 35%, 
+        #8b7aa0 55%, 
+        #5a4b6b 75%, 
+        #2d1b3d 100%
+      );
+      display:flex; align-items:stretch; justify-content:center; padding:16px;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
       color:#fff;
     }
-    @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-    .app{width:min(720px,100%); height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px;}
+    .app{
+      width:min(720px,100%); display:flex; flex-direction:column; 
+      justify-content:flex-start; gap:16px; padding-top:20px;
+    }
 
     .title{
       text-align:center; font-weight:800; letter-spacing:.04em; line-height:1.2;
       margin:0; font-size:clamp(18px,3.5vw,26px); color:#fff4b0;
-      text-shadow:0 2px 12px rgba(0,0,0,.55), 0 0 20px rgba(255,244,176,.35);
+      text-shadow:0 2px 12px rgba(0,0,0,.55);
     }
     .title .date{ font-size:.75em; font-weight:700; color:#ffeeb5; margin-left:.5em; opacity:.95 }
 
-    .status{ display:flex; justify-content:space-between; align-items:center; font-size:clamp(12px,2.5vw,14px); opacity:.9; color:#efeefe }
-
-    .card{
-      background:var(--card); color:var(--text); border-radius:18px;
-      box-shadow:0 12px 32px rgba(0,0,0,.35);
-      padding:14px;
-      display:flex; flex-direction:column;
-      height:calc(100% - 70px); /* fit within viewport with title/status */
+    .status{ 
+      display:flex; justify-content:space-between; align-items:center; 
+      font-size:clamp(12px,2.5vw,14px); color:#f5f5f8; 
     }
 
     .word{
-      background:#f8f7fc; border-radius:14px; padding:12px;
+      background:#ffffff; border-radius:14px; padding:16px;
       display:flex; justify-content:center; align-items:center; gap:8px;
-      box-shadow:inset 0 0 0 2px #eee; margin-bottom:10px; min-height:84px;
+      box-shadow:0 2px 8px rgba(0,0,0,.08); min-height:84px;
+      margin-bottom:16px;
     }
-    .word .text{font-size:clamp(28px,6vw,48px); font-weight:800; letter-spacing:.02em}
+    .word .text{
+      font-size:clamp(28px,6vw,48px); 
+      font-weight:800; 
+      letter-spacing:.02em; 
+      color:#2d1b3d;
+    }
     .speak{
       border:none; background:#fff; border:2px solid #e8e3ff; border-radius:12px;
       padding:8px 10px; cursor:pointer; font-size:22px; line-height:1;
       box-shadow:0 2px 8px rgba(0,0,0,.08);
-      transition:transform .05s ease, border-color .2s, background .2s
     }
-    .speak:active{transform:scale(.95)}
 
     .choices{
-      display:grid; grid-template-columns:1fr 1fr; gap:10px; align-content:start;
+      display:grid; grid-template-columns:1fr 1fr; gap:12px;
+      margin-bottom:16px;
     }
     .choice{
       background:#ffffff; border:2px solid #eceaff; border-radius:12px;
-      padding:14px 14px; font-size:clamp(16px,3.8vw,20px); font-weight:800; text-align:center;
-      cursor:pointer; transition:transform .05s ease, box-shadow .2s, border-color .2s, background .2s;
-      box-shadow:0 2px 8px rgba(0,0,0,.06); color:#2b1d55
+      padding:16px; font-size:clamp(16px,3.8vw,20px); font-weight:800; text-align:center;
+      cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.06); color:#2b1d55;
     }
-    .choice:active{transform:scale(.99)}
     .choice.correct{border-color:var(--correct); background:#e8fff3; color:#0b6a3f}
     .choice.incorrect{border-color:var(--wrong); background:#fff0f3; color:#8b1230}
     .choice[disabled]{opacity:.95; cursor:not-allowed}
 
     .controls{
       display:flex; gap:10px; justify-content:center; align-items:center;
-      margin-top:10px;
+      margin-bottom:8px;
     }
     .btn{
       background:#f3f1ff; color:#2b1d55; border:2px solid #dcd6ff; border-radius:12px;
-      padding:10px 16px; font-weight:900; letter-spacing:.02em; cursor:pointer;
-      backdrop-filter:blur(4px); transition:transform .05s ease, background .2s, border-color .2s
+      padding:12px 18px; font-weight:900; letter-spacing:.02em; cursor:pointer;
     }
-    .btn:active{transform:scale(.98)}
     .btn.primary{background:#3b2bbf; border-color:#b9b2ff; color:#fff}
     .btn.hidden{display:none}
     .hidden{display:none !important}
 
-    .result{ text-align:center; color:#2b1d55; margin-top:8px; font-weight:900 }
-    .final .card{ justify-content:center; }
+    .result{ text-align:center; color:#2b1d55; font-weight:900; margin-bottom:8px; }
     .final .result{ font-size:clamp(26px,6vw,40px); color:#3b2bbf; }
   </style>
 </head>
@@ -104,21 +100,19 @@
       <span id="score">スコア：0</span>
     </div>
 
-    <div class="card">
-      <div class="word">
-        <div id="word" class="text">Loading...</div>
-        <button id="speakBtn" class="speak" title="発音を聴く" aria-label="発音を聴く">📢</button>
-      </div>
-
-      <div id="choices" class="choices"></div>
-
-      <div class="controls">
-        <button id="nextBtn" class="btn primary hidden">次へ ▶</button>
-        <button id="restartBtn" class="btn hidden">もう一度やる</button>
-      </div>
-
-      <div id="result" class="result" aria-live="polite"></div>
+    <div class="word">
+      <div id="word" class="text">Loading...</div>
+      <button id="speakBtn" class="speak" title="発音を聴く" aria-label="発音を聴く">📢</button>
     </div>
+
+    <div id="choices" class="choices"></div>
+
+    <div class="controls">
+      <button id="nextBtn" class="btn primary hidden">次へ ▶</button>
+      <button id="restartBtn" class="btn hidden">もう一度やる</button>
+    </div>
+
+    <div id="result" class="result" aria-live="polite"></div>
   </div>
 
   <script>
