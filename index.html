@@ -6,42 +6,43 @@
   <title>徳洲会体操クラブ　英単語クイズ</title>
   <style>
     :root{
-      --purple-dark1:#0b0315;   /* very dark purple */
-      --purple-dark2:#1a0830;   /* aubergine */
-      --purple-dark3:#2d0c4d;   /* rich accent */
+      --purple-dark1:#05020a;   /* almost black purple */
+      --purple-dark2:#12041f;   /* deep eggplant */
+      --purple-dark3:#240838;   /* accent purple */
       --card:#ffffff;
       --text:#1a1333;
       --correct:#18a558;
       --wrong:#ff4d6d;
     }
     html,body{
-      height:100%;margin:0;
+      height:100vh;margin:0;overflow:hidden;
       background:
-        radial-gradient(1000px 600px at 25% 20%, rgba(255,255,255,.05), transparent 65%),
-        radial-gradient(800px 500px at 70% 30%, rgba(255,255,255,.04), transparent 60%),
-        linear-gradient(160deg, var(--purple-dark1), var(--purple-dark2) 50%, var(--purple-dark3));
+        radial-gradient(900px 600px at 25% 20%, rgba(255,255,255,.04), transparent 70%),
+        radial-gradient(700px 500px at 70% 30%, rgba(255,255,255,.03), transparent 65%),
+        linear-gradient(165deg, var(--purple-dark1), var(--purple-dark2) 55%, var(--purple-dark3));
       background-size: 200% 200%;
-      animation: sheen 20s ease-in-out infinite;
+      animation: sheen 24s ease-in-out infinite;
       display:flex;align-items:center;justify-content:center;padding:24px;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
       color:#fff;
     }
     @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-    .app{width:min(760px,100%)}
+    .app{width:min(760px,100%); max-height: 90vh;}
 
-    .title{ text-align:center;font-weight:800;letter-spacing:.04em;line-height:1.2;margin-bottom:14px;font-size:clamp(20px,4vw,32px);text-shadow:0 2px 12px rgba(0,0,0,.45);color: #fffa9e; }
+    .title{ text-align:center;font-weight:800;letter-spacing:.04em;line-height:1.2;margin-bottom:14px;font-size:clamp(20px,4vw,32px);color:#fff4b0;text-shadow:0 2px 14px rgba(0,0,0,.55), 0 0 20px rgba(255,244,176,.35); }
 
-    .card{background:var(--card);color:var(--text);border-radius:22px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:22px}
+    .card{background:var(--card);color:var(--text);border-radius:22px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:22px;min-height:520px;display:flex;flex-direction:column;}
 
     .status{display:flex;justify-content:space-between;align-items:center;font-size:clamp(12px,2.5vw,14px);opacity:.9;margin-bottom:10px;color:#efeefe}
 
-    .word{background:#f8f7fc;border-radius:16px;padding:18px 16px;display:flex;justify-content:center;align-items:center;gap:10px;box-shadow:inset 0 0 0 2px #eee;margin-bottom:14px}
+    .word{background:#f8f7fc;border-radius:16px;padding:18px 16px;display:flex;justify-content:center;align-items:center;gap:10px;box-shadow:inset 0 0 0 2px #eee;margin-bottom:14px;min-height:120px}
     .word .text{font-size:clamp(32px,7vw,56px);font-weight:800;letter-spacing:.02em}
     .speak{border:none;background:#fff;border:2px solid #e8e3ff;border-radius:12px;padding:8px 10px;cursor:pointer;font-size:22px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .05s ease, border-color .2s, background .2s}
     .speak:active{transform:scale(.95)}
 
-    .choices{display:grid;grid-template-columns:1fr;gap:10px}
+    .choices{display:grid;grid-template-columns:1fr;gap:10px;min-height:230px}
+    @media (min-width:520px){.choices{grid-template-columns:1fr 1fr;min-height:220px}}
     @media (min-width:520px){.choices{grid-template-columns:1fr 1fr}}
 
     .choice{background:#ffffff;border:2px solid #eceaff;border-radius:14px;padding:14px 16px;font-size:clamp(16px,4vw,20px);font-weight:700;text-align:left;cursor:pointer;transition:transform .05s ease, box-shadow .2s, border-color .2s, background .2s;box-shadow:0 2px 8px rgba(0,0,0,.06);color:#2b1d55}
@@ -50,18 +51,19 @@
     .choice.incorrect{border-color:var(--wrong);background:#fff0f3;color:#8b1230}
     .choice[disabled]{opacity:.9;cursor:not-allowed}
 
-    .controls{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:16px}
+    .controls{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:auto;min-height:48px}
     .btn{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.45);border-radius:12px;padding:10px 14px;font-weight:800;letter-spacing:.02em;cursor:pointer;backdrop-filter:blur(4px);transition:transform .05s ease, background .2s, border-color .2s}
     .btn:active{transform:scale(.98)}
     .btn.primary{background:#3b2bbf;border-color:#b9b2ff}
     .btn.hidden{display:none}
     .hidden{display:none !important}
     .result{text-align:center;color:#fff;margin-top:14px;font-weight:700}
+  .title .date{ font-size:.7em; font-weight:700; color:#ffeeb5; margin-left:.5em; opacity:.95 }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="title">徳洲会体操クラブ　英単語クイズ</div>
+    <div class="title">徳洲会体操クラブ　英単語クイズ <span class="date">2025/9/10</span></div>
     <div class="status"><span id="progress">1 / 15</span><span id="score">スコア：0</span></div>
     <div class="card">
       <div class="word">
@@ -87,12 +89,12 @@
       { w: "serious",    a: ["まじめな","おもしろい","元気な","うるさい"], c: 0 },
       { w: "correct",    a: ["正しい","間違った","暗い","高い"], c: 0 },
       { w: "artificial", a: ["人工の","自然の","国産の","伝統的な"], c: 0 },
-      { w: "familiar",   a: ["よく知っている／親しみのある","不明な","危険な","特別な"], c: 0 },
-      { w: "specific",   a: ["具体的な／特定の","一般的な","同じ","古い"], c: 0 },
+      { w: "familiar",   a: ["よく知っている","不明な","危険な","特別な"], c: 0 },
+      { w: "specific",   a: ["具体的な","一般的な","同じ","古い"], c: 0 },
       { w: "worried",    a: ["心配している","喜んでいる","怒っている","退屈している"], c: 0 },
       { w: "strict",     a: ["厳しい","優しい","弱い","広い"], c: 0 },
       { w: "exhausted",  a: ["へとへとの","眠い","空腹の","退屈な"], c: 0 },
-      { w: "exactly",    a: ["正確に／ちょうど","たぶん","だいたい","少し"], c: 0 },
+      { w: "exactly",    a: ["正確に","たぶん","だいたい","少し"], c: 0 },
       { w: "fluently",   a: ["流ちょうに","ゆっくりと","静かに","きれいに"], c: 0 },
     ];
 
@@ -145,6 +147,7 @@
         wordEl.textContent = 'おつかれさま！';
         choicesEl.innerHTML = '';
         resultEl.textContent = `結果：${score} / ${QUESTIONS.length}`;
+        nextBtn.classList.add('hidden');
         restartBtn.classList.remove('hidden');
         speakBtn.classList.add('hidden');
         progressEl.textContent = `${QUESTIONS.length} / ${QUESTIONS.length}`;
