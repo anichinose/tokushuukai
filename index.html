@@ -6,9 +6,9 @@
   <title>徳洲会体操クラブ　英単語（Week 10）クイズ</title>
   <style>
     :root{
-      --purple-dark1:#05020a;   /* almost black purple */
-      --purple-dark2:#12041f;   /* deep eggplant */
-      --purple-dark3:#240838;   /* accent purple */
+      --purple-dark1:#05020a;
+      --purple-dark2:#12041f;
+      --purple-dark3:#240838;
       --card:#ffffff;
       --text:#1a1333;
       --correct:#18a558;
@@ -21,7 +21,7 @@
         radial-gradient(900px 600px at 25% 20%, rgba(255,255,255,.04), transparent 70%),
         radial-gradient(700px 500px at 70% 30%, rgba(255,255,255,.03), transparent 65%),
         linear-gradient(165deg, var(--purple-dark1), var(--purple-dark2) 55%, var(--purple-dark3));
-      background-size: 200% 200%;
+      background-size:200% 200%;
       animation: sheen 24s ease-in-out infinite;
       display:flex; align-items:center; justify-content:center; padding:16px;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
@@ -29,7 +29,7 @@
     }
     @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-    .app{width:min(680px,100%); height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px;}
+    .app{width:min(720px,100%); height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px;}
 
     .title{
       text-align:center; font-weight:800; letter-spacing:.04em; line-height:1.2;
@@ -38,26 +38,22 @@
     }
     .title .date{ font-size:.75em; font-weight:700; color:#ffeeb5; margin-left:.5em; opacity:.95 }
 
-    .status{
-      display:flex; justify-content:space-between; align-items:center;
-      font-size:clamp(12px,2.5vw,14px); opacity:.9; color:#efeefe
-    }
+    .status{ display:flex; justify-content:space-between; align-items:center; font-size:clamp(12px,2.5vw,14px); opacity:.9; color:#efeefe }
 
     .card{
       background:var(--card); color:var(--text); border-radius:18px;
       box-shadow:0 12px 32px rgba(0,0,0,.35);
       padding:14px;
       display:flex; flex-direction:column;
-      /* No min-heights -> keeps layout tight so buttons sit right under choices */
-      height:calc(100% - 70px);  /* fit within viewport with title/status */
+      height:calc(100% - 70px); /* fit within viewport with title/status */
     }
 
     .word{
       background:#f8f7fc; border-radius:14px; padding:12px;
       display:flex; justify-content:center; align-items:center; gap:8px;
-      box-shadow:inset 0 0 0 2px #eee; margin-bottom:10px; min-height:80px;
+      box-shadow:inset 0 0 0 2px #eee; margin-bottom:10px; min-height:84px;
     }
-    .word .text{font-size:clamp(24px,6vw,42px); font-weight:800; letter-spacing:.02em}
+    .word .text{font-size:clamp(28px,6vw,48px); font-weight:800; letter-spacing:.02em}
     .speak{
       border:none; background:#fff; border:2px solid #e8e3ff; border-radius:12px;
       padding:8px 10px; cursor:pointer; font-size:22px; line-height:1;
@@ -67,28 +63,28 @@
     .speak:active{transform:scale(.95)}
 
     .choices{
-      display:grid; grid-template-columns:1fr 1fr; gap:8px;
-      align-content:start;
+      display:grid; grid-template-columns:1fr 1fr; gap:10px; align-content:start;
     }
+    /* BIGGER choice boxes */
     .choice{
-      background:#ffffff; border:2px solid #eceaff; border-radius:10px;
-      padding:10px 12px; font-size:clamp(14px,3.5vw,18px); font-weight:700; text-align:left;
+      background:#ffffff; border:2px solid #eceaff; border-radius:12px;
+      padding:14px 14px; font-size:clamp(16px,3.8vw,20px); font-weight:800; text-align:center;
       cursor:pointer; transition:transform .05s ease, box-shadow .2s, border-color .2s, background .2s;
-      box-shadow:0 2px 6px rgba(0,0,0,.06); color:#2b1d55
+      box-shadow:0 2px 8px rgba(0,0,0,.06); color:#2b1d55
     }
     .choice:active{transform:scale(.99)}
     .choice.correct{border-color:var(--correct); background:#e8fff3; color:#0b6a3f}
     .choice.incorrect{border-color:var(--wrong); background:#fff0f3; color:#8b1230}
-    .choice[disabled]{opacity:.9; cursor:not-allowed}
+    .choice[disabled]{opacity:.95; cursor:not-allowed}
 
-    /* Controls live RIGHT UNDER the choices */
+    /* Controls RIGHT UNDER the choices, centered */
     .controls{
-      display:flex; gap:10px; justify-content:flex-start; align-items:center;
-      margin-top:8px;
+      display:flex; gap:10px; justify-content:center; align-items:center;
+      margin-top:10px;
     }
     .btn{
       background:#f3f1ff; color:#2b1d55; border:2px solid #dcd6ff; border-radius:12px;
-      padding:10px 14px; font-weight:800; letter-spacing:.02em; cursor:pointer;
+      padding:10px 16px; font-weight:900; letter-spacing:.02em; cursor:pointer;
       backdrop-filter:blur(4px); transition:transform .05s ease, background .2s, border-color .2s
     }
     .btn:active{transform:scale(.98)}
@@ -96,12 +92,11 @@
     .btn.hidden{display:none}
     .hidden{display:none !important}
 
-    .result{text-align:center; color:#fff; margin-top:8px; font-weight:800}
-    .final #result{ font-size:clamp(22px,5.5vw,34px); color:#ffef9c; text-shadow:0 1px 10px rgba(0,0,0,.35) }
+    .result{ text-align:center; color:#2b1d55; margin-top:8px; font-weight:900 }
+    /* Final screen: center content and make result big, near middle */
+    .final .card{ justify-content:center; }
+    .final .result{ font-size:clamp(26px,6vw,40px); color:#3b2bbf; }
 
-    /* Final screen layout */
-    .final .controls{ justify-content:center }
-    .final .word{ min-height:40px }
   </style>
 </head>
 <body>
@@ -121,14 +116,15 @@
 
       <div id="choices" class="choices"></div>
 
-      <!-- Buttons are RIGHT UNDER the choices -->
+      <!-- Buttons RIGHT UNDER choices, centered -->
       <div class="controls">
         <button id="nextBtn" class="btn primary hidden">次へ ▶</button>
         <button id="restartBtn" class="btn hidden">もう一度やる</button>
       </div>
-    </div>
 
-    <div id="result" class="result" aria-live="polite"></div>
+      <!-- Result INSIDE the card so it can sit near the middle on final page -->
+      <div id="result" class="result" aria-live="polite"></div>
+    </div>
   </div>
 
   <script>
@@ -216,7 +212,6 @@
       progressEl.textContent = `${idx+1} / ${QUESTIONS.length}`;
       scoreEl.textContent = `スコア：${score}`;
 
-      // Fresh shuffle of answer choices each time
       const optionIdxs = shuffle([0,1,2,3]);
       choicesEl.innerHTML = '';
       optionIdxs.forEach(i=>{
@@ -238,7 +233,7 @@
 
       if(isCorrect){ score++; sfxCorrect(); } else { sfxWrong(); }
       scoreEl.textContent = `スコア：${score}`;
-      nextBtn.classList.remove('hidden'); // appears right under choices
+      nextBtn.classList.remove('hidden'); // appears right under choices (centered)
     }
 
     nextBtn.addEventListener('click', ()=>{ idx++; render(); });
@@ -260,7 +255,7 @@
     }
     speakBtn.addEventListener('click', ()=>{
       const showing = wordEl.textContent.trim();
-      if(showing && showing !== 'おつかれさま!') speak(showing);
+      if(showing && showing !== 'おつかれさま！') speak(showing);
     });
 
     render();
