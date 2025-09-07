@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>徳洲会体操クラブ　英単語クイズ</title>
+  <style>
+    :root{
+      --purple-dark1:#0b0315;   /* very dark purple */
+      --purple-dark2:#1a0830;   /* aubergine */
+      --purple-dark3:#2d0c4d;   /* rich accent */
+      --card:#ffffff;
+      --text:#1a1333;
+      --correct:#18a558;
+      --wrong:#ff4d6d;
+    }
+    html,body{
+      height:100%;margin:0;
+      background:
+        radial-gradient(1000px 600px at 25% 20%, rgba(255,255,255,.05), transparent 65%),
+        radial-gradient(800px 500px at 70% 30%, rgba(255,255,255,.04), transparent 60%),
+        linear-gradient(160deg, var(--purple-dark1), var(--purple-dark2) 50%, var(--purple-dark3));
+      background-size: 200% 200%;
+      animation: sheen 20s ease-in-out infinite;
+      display:flex;align-items:center;justify-content:center;padding:24px;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+      color:#fff;
+    }
+    @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+    .app{width:min(760px,100%)}
+
+    .title{ text-align:center;font-weight:800;letter-spacing:.04em;line-height:1.2;margin-bottom:14px;font-size:clamp(20px,4vw,32px);text-shadow:0 2px 12px rgba(0,0,0,.45);color: #fffa9e; }
+
+    .card{background:var(--card);color:var(--text);border-radius:22px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:22px}
+
+    .status{display:flex;justify-content:space-between;align-items:center;font-size:clamp(12px,2.5vw,14px);opacity:.9;margin-bottom:10px;color:#efeefe}
+
+    .word{background:#f8f7fc;border-radius:16px;padding:18px 16px;display:flex;justify-content:center;align-items:center;gap:10px;box-shadow:inset 0 0 0 2px #eee;margin-bottom:14px}
+    .word .text{font-size:clamp(32px,7vw,56px);font-weight:800;letter-spacing:.02em}
+    .speak{border:none;background:#fff;border:2px solid #e8e3ff;border-radius:12px;padding:8px 10px;cursor:pointer;font-size:22px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:transform .05s ease, border-color .2s, background .2s}
+    .speak:active{transform:scale(.95)}
+
+    .choices{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:520px){.choices{grid-template-columns:1fr 1fr}}
+
+    .choice{background:#ffffff;border:2px solid #eceaff;border-radius:14px;padding:14px 16px;font-size:clamp(16px,4vw,20px);font-weight:700;text-align:left;cursor:pointer;transition:transform .05s ease, box-shadow .2s, border-color .2s, background .2s;box-shadow:0 2px 8px rgba(0,0,0,.06);color:#2b1d55}
+    .choice:active{transform:scale(.99)}
+    .choice.correct{border-color:var(--correct);background:#e8fff3;color:#0b6a3f}
+    .choice.incorrect{border-color:var(--wrong);background:#fff0f3;color:#8b1230}
+    .choice[disabled]{opacity:.9;cursor:not-allowed}
+
+    .controls{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:16px}
+    .btn{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.45);border-radius:12px;padding:10px 14px;font-weight:800;letter-spacing:.02em;cursor:pointer;backdrop-filter:blur(4px);transition:transform .05s ease, background .2s, border-color .2s}
+    .btn:active{transform:scale(.98)}
+    .btn.primary{background:#3b2bbf;border-color:#b9b2ff}
+    .btn.hidden{display:none}
+    .hidden{display:none !important}
+    .result{text-align:center;color:#fff;margin-top:14px;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="title">徳洲会体操クラブ　英単語クイズ</div>
+    <div class="status"><span id="progress">1 / 15</span><span id="score">スコア：0</span></div>
+    <div class="card">
+      <div class="word">
+        <div id="word" class="text">Loading...</div>
+        <button id="speakBtn" class="speak" title="発音を聴く" aria-label="発音を聴く">📢</button>
+      </div>
+      <div id="choices" class="choices"></div>
+      <div class="controls">
+        <button id="nextBtn" class="btn primary hidden">次へ ▶</button>
+        <button id="restartBtn" class="btn hidden">もう一度やる</button>
+      </div>
+    </div>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      { w: "thick",      a: ["厚い","薄い","軽い","速い"], c: 0 },
+      { w: "proud",      a: ["誇りに思う","恥ずかしい","怖い","悲しい"], c: 0 },
+      { w: "necessary",  a: ["必要な","不可能な","簡単な","危険な"], c: 0 },
+      { w: "honest",     a: ["正直な","失礼な","上手な","静かな"], c: 0 },
+      { w: "lonely",     a: ["さびしい","忙しい","にぎやかな","危ない"], c: 0 },
+      { w: "serious",    a: ["まじめな","おもしろい","元気な","うるさい"], c: 0 },
+      { w: "correct",    a: ["正しい","間違った","暗い","高い"], c: 0 },
+      { w: "artificial", a: ["人工の","自然の","国産の","伝統的な"], c: 0 },
+      { w: "familiar",   a: ["よく知っている／親しみのある","不明な","危険な","特別な"], c: 0 },
+      { w: "specific",   a: ["具体的な／特定の","一般的な","同じ","古い"], c: 0 },
+      { w: "worried",    a: ["心配している","喜んでいる","怒っている","退屈している"], c: 0 },
+      { w: "strict",     a: ["厳しい","優しい","弱い","広い"], c: 0 },
+      { w: "exhausted",  a: ["へとへとの","眠い","空腹の","退屈な"], c: 0 },
+      { w: "exactly",    a: ["正確に／ちょうど","たぶん","だいたい","少し"], c: 0 },
+      { w: "fluently",   a: ["流ちょうに","ゆっくりと","静かに","きれいに"], c: 0 },
+    ];
+
+    function shuffle(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    let audioCtx = null;
+    function tone(freq=440, dur=0.18, type='sine', vol=0.15){
+      try{
+        audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = type; o.frequency.value = freq; g.gain.value = vol;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        const now = audioCtx.currentTime;
+        g.gain.setValueAtTime(vol, now);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+        o.stop(now + dur);
+      }catch(e){}
+    }
+    function sfxCorrect(){ tone(880, 0.18, 'sine'); }
+    function sfxWrong(){ tone(220, 0.22, 'sawtooth', 0.12); }
+
+    let order = shuffle([...Array(QUESTIONS.length).keys()]);
+    let idx = 0;
+    let score = 0;
+
+    const wordEl = document.getElementById('word');
+    const choicesEl = document.getElementById('choices');
+    const progressEl = document.getElementById('progress');
+    const scoreEl = document.getElementById('score');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const resultEl = document.getElementById('result');
+    const speakBtn = document.getElementById('speakBtn');
+
+    function render(){
+      resultEl.textContent = '';
+      nextBtn.classList.add('hidden');
+      restartBtn.classList.add('hidden');
+
+      if(idx >= order.length){
+        wordEl.textContent = 'おつかれさま！';
+        choicesEl.innerHTML = '';
+        resultEl.textContent = `結果：${score} / ${QUESTIONS.length}`;
+        restartBtn.classList.remove('hidden');
+        speakBtn.classList.add('hidden');
+        progressEl.textContent = `${QUESTIONS.length} / ${QUESTIONS.length}`;
+        return;
+      }
+
+      const q = QUESTIONS[order[idx]];
+      wordEl.textContent = q.w;
+      speakBtn.classList.remove('hidden');
+      progressEl.textContent = `${idx+1} / ${QUESTIONS.length}`;
+      scoreEl.textContent = `スコア：${score}`;
+
+      const optionIdxs = shuffle([0,1,2,3]);
+      choicesEl.innerHTML = '';
+
+      optionIdxs.forEach(i=>{
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.textContent = q.a[i];
+        btn.onclick = () => handleAnswer(i === q.c, q.c, btn);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(isCorrect, correctIndex, clickedBtn){
+      const buttons = [...document.querySelectorAll('.choice')];
+      buttons.forEach(b=> b.disabled = true);
+
+      clickedBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
+      const q = QUESTIONS[order[idx]];
+      buttons.forEach(b=>{ if(b.textContent === q.a[correctIndex]) b.classList.add('correct'); });
+
+      if(isCorrect){ score++; sfxCorrect(); } else { sfxWrong(); }
+      scoreEl.textContent = `スコア：${score}`;
+      nextBtn.classList.remove('hidden');
+    }
+
+    nextBtn.addEventListener('click', ()=>{ idx++; render(); });
+
+    restartBtn.addEventListener('click', ()=>{
+      score = 0; idx = 0; order = shuffle([...Array(QUESTIONS.length).keys()]); render();
+    });
+
+    function speak(text){
+      try{
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.95;
+        u.pitch = 1.0;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }catch(e){}
+    }
+    speakBtn.addEventListener('click', ()=>{
+      const showing = wordEl.textContent.trim();
+      if(showing && showing !== 'おつかれさま！') speak(showing);
+    });
+
+    render();
+  </script>
+</body>
+</html>
